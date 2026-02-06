@@ -1,31 +1,40 @@
 // ====================================
-// ACADEMY JIU JITSU - APP.JS v4
+// ACADEMY JIU JITSU - APP.JS v5 CORRIGIDO
 // Professor Levi Silva
-// URL do Backend atualizada
+// URL e parâmetros atualizados
 // ====================================
 
-// ✅ URL ATUALIZADA DO BACKEND
-const API_URL = "https://script.google.com/macros/s/AKfycbyvGxWKUwjerOlChtAWIPOxjTh4NX_j_MMzz-KCkNRhxpXvVzfcHGd66GIHGYw1CAJzpQ/exec";
+// ✅ URL CORRIGIDA DO BACKEND
+const API_URL = "https://script.google.com/macros/s/AKfycbyjmWFKYD6Pz9JZ_u_d8cexShlRGxTibSpuEHk7fQ4Ye2zzadB62Fx5EyEiRFsc5wdqtA/exec";
 
-console.log("✅ App.js carregado");
+// ✅ TIMEOUT PARA EVITAR "CARREGANDO INFINITO"
+const API_TIMEOUT = 30000; // 30 segundos
+
+console.log("✅ App.js carregado (v5 CORRIGIDO)");
 console.log("📤 API URL:", API_URL);
 
-// ===== API REQUEST =====
-async function apiRequest(action, dados = {}) {
+// ===== API REQUEST COM TIMEOUT =====
+async function apiRequest(acao, dados = {}) {
   try {
-    console.log(`📡 Requisição: ${action}`);
+    console.log(`📡 Requisição: ${acao}`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
     
     const response = await fetch(API_URL, {
       method: "POST",
       redirect: "follow",
+      signal: controller.signal,
       headers: {
-        "Content-Type": "text/plain;charset=utf-8"
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ action, ...dados })
+      body: JSON.stringify({ acao, ...dados })
     });
     
+    clearTimeout(timeoutId);
+    
     const text = await response.text();
-    console.log(`✅ Resposta recebida para: ${action}`);
+    console.log(`✅ Resposta recebida para: ${acao}`);
     
     try {
       return JSON.parse(text);
@@ -34,30 +43,53 @@ async function apiRequest(action, dados = {}) {
       return { sucesso: false, mensagem: "Erro ao processar resposta" };
     }
   } catch (erro) {
-    console.error(`❌ Erro na requisição ${action}:`, erro);
+    if (erro.name === 'AbortError') {
+      console.error(`❌ Timeout na requisição ${acao}`);
+      return { sucesso: false, mensagem: "Tempo limite de requisição excedido" };
+    }
+    console.error(`❌ Erro na requisição ${acao}:`, erro);
     return { sucesso: false, mensagem: "Erro de conexão: " + erro.message };
   }
 }
 
-// ===== API FUNCTIONS =====
+// ===== API FUNCTIONS COM NOMES CORRETOS =====
+
+// ✅ CORRIGIDO: "login" → "fazerLogin"
 async function fazerLogin(email, senha) {
-  return apiRequest("login", { email, senha });
+  console.log("🔐 Tentando login com:", email);
+  const resultado = await apiRequest("fazerLogin", { email, senha });
+  
+  if (resultado.sucesso) {
+    console.log("✅ Login bem-sucedido!");
+    salvarSessao(resultado.usuario);
+  } else {
+    console.log("❌ Login falhou:", resultado.mensagem);
+  }
+  
+  return resultado;
 }
 
+// ✅ CORRIGIDO: "loginAdmin" → "fazerLoginAdmin"
 async function fazerLoginAdmin(chave) {
-  return apiRequest("loginAdmin", { chave });
+  return apiRequest("fazerLoginAdmin", { chave });
 }
 
+// ✅ CORRIGIDO: "registro" → "registrarAluno"
 async function registrarAluno(nome, email, senha, faixa, ct) {
-  return apiRequest("registro", { nome, email, senha, faixa, ct });
+  return apiRequest("registrarAluno", { nome, email, senha, faixa, ct });
+}
+
+// ✅ CORRIGIDO: obter dados do aluno
+async function obterDadosAluno(email) {
+  return apiRequest("obterCheckInsAluno", { email });
 }
 
 async function obterEstatisticasAluno(alunoID) {
-  return apiRequest("obterAluno", { alunoID });
+  return apiRequest("obterCheckInsAluno", { alunoID });
 }
 
 async function obterAlunosPendentes(adminToken) {
-  return apiRequest("obterPendentes", { adminToken });
+  return apiRequest("obterAlunosPendentes", { adminToken });
 }
 
 async function aprovarAluno(alunoID, adminToken) {
@@ -65,11 +97,12 @@ async function aprovarAluno(alunoID, adminToken) {
 }
 
 async function obterTodosAlunos(adminToken) {
-  return apiRequest("obterTodosAlunos", { adminToken });
+  return apiRequest("obterRankingGeral", { adminToken });
 }
 
+// ✅ CORRIGIDO: "obterTodosCTs" → "obterCTs"
 async function obterTodosCTs() {
-  return apiRequest("obterTodosCTs", {});
+  return apiRequest("obterCTs", {});
 }
 
 async function cadastrarCT(nome, cidade, estado, responsavel, adminToken) {
@@ -80,10 +113,30 @@ async function alterarGrau(alunoID, novoGrau, adminToken) {
   return apiRequest("alterarGrau", { alunoID, novoGrau, adminToken });
 }
 
+async function fazerCheckIn(email, ctID, data, horario) {
+  return apiRequest("fazerCheckIn", { email, ctID, data, horario });
+}
+
+async function obterRankingGeral() {
+  return apiRequest("obterRankingGeral", {});
+}
+
 // ===== SESSION MANAGEMENT =====
 function salvarSessao(dados) {
-  sessionStorage.setItem("academy_user", JSON.stringify(dados));
-  console.log("✅ Sessão salva:", dados.nome);
+  // Armazenar dados do usuário
+  const usuarioSalvo = {
+    id: dados.id || dados.usuario?.id,
+    nome: dados.nome || dados.usuario?.nome,
+    email: dados.email || dados.usuario?.email,
+    faixa: dados.faixa || dados.usuario?.faixa,
+    ct: dados.ct || dados.usuario?.ct_principal,
+    status: dados.status || dados.usuario?.status,
+    role: dados.role || "aluno",
+    timestamp: new Date().toISOString()
+  };
+  
+  sessionStorage.setItem("academy_user", JSON.stringify(usuarioSalvo));
+  console.log("✅ Sessão salva:", usuarioSalvo.nome);
 }
 
 function obterSessao() {
@@ -218,4 +271,20 @@ function obterAdminToken() {
     return null;
   }
   return user.adminToken;
+}
+
+// ===== DEBUG MODE =====
+function ativarDebug() {
+  console.log("🔧 DEBUG ATIVADO");
+  console.log("URL API:", API_URL);
+  console.log("Sessão atual:", obterSessao());
+  
+  // Expor funções globalmente para testes
+  window.debugAPI = {
+    apiRequest,
+    fazerLogin,
+    obterSessao,
+    obterTodosCTs
+  };
+  console.log("💡 Use: debugAPI.fazerLogin('email@example.com', 'senha')");
 }
