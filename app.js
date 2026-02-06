@@ -4,7 +4,7 @@
 // ============================================
 
 // ========== CONFIGURAÇÕES ==========
-const API_URL = 'https://script.google.com/macros/s/AKfycbyvGxWKUwjerOlChtAWIPOxjTh4NX_j_MMzz-KCkNRhxpXvVzfcHGd66GIHGYw1CAJzpQ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxJd30WtgpPUWsKYi1bVxtVPeEe5gObEcdstsjuqT4Z9kdzWV6Dw77SxxS_LonnfBXADg/exec';
 
 const CONFIG = {
     apiUrl: API_URL,
