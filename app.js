@@ -39,6 +39,39 @@ async function chamarAPI(acao, dados = {}) {
     }
 
     try {
+        const formData = new URLSearchParams();
+        formData.append('acao', acao);
+
+        for (const key in dados) {
+            formData.append(key, dados[key]);
+        }
+
+        const response = await fetch(CONFIG.apiUrl, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (CONFIG.debug) {
+            console.log(`✅ Resposta: ${acao}`, data);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error('❌ Erro na API:', error);
+        throw error;
+    }
+}
+
+    }
+
+    try {
         const payload = {
             acao: acao,
             ...dados
