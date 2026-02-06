@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academy Jiu Jitsu - Painel do Aluno</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-user span {
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #666;
+            margin: 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .data-item-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-item-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .belt-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+        }
+
+        .belt-branca { background: #8b7355; }
+        .belt-azul { background: #4169e1; }
+        .belt-roxa { background: #9370db; }
+        .belt-marrom { background: #8b4513; }
+        .belt-preta { background: #000000; }
+
+        .degree-dots {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .degree-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 2px solid #667eea;
+        }
+
+        .degree-dot.filled {
+            background: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-user {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-logout {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-content">
+            <h1>🥋 ACADEMY JIU JITSU</h1>
+            <div class="header-user">
+                <span id="headerUserName">Carregando...</span>
+                <button class="btn-logout" id="btnSair">🚪 Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTAINER -->
+    <div class="container">
+        <!-- MENSAGENS -->
+        <div class="message" id="messageBox"></div>
+
+        <!-- WELCOME -->
+        <div class="welcome">
+            <h2>Bem-vindo, <span data-user-name>Carregando</span>!</h2>
+            <p>Continue evoluindo no Jiu Jitsu 🤙</p>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Total de Aulas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Aulas Este Mês</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><span data-user-belt>Branca</span></div>
+                <div class="stat-label">Faixa Atual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value"><span data-user-ct>CT001</span></div>
+                <div class="stat-label">Centro de Treinamento</div>
+            </div>
+        </div>
+
+        <!-- MEUS DADOS -->
+        <div class="data-section">
+            <h3>📋 Meus Dados</h3>
+            <div class="data-grid">
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">Nome</div>
+                        <div class="data-item-value" data-user-name>Carregando</div>
+                    </div>
+                </div>
+
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">E-mail</div>
+                        <div class="data-item-value" data-user-email>Carregando</div>
+                    </div>
+                </div>
+
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">Faixa</div>
+                        <div class="data-item-value">
+                            <span class="belt-badge" id="beltBadge" data-user-belt>Branca</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">Grau</div>
+                        <div class="data-item-value" data-user-degree>0º Grau</div>
+                        <div class="degree-dots" id="degreeDots">
+                            <div class="degree-dot"></div>
+                            <div class="degree-dot"></div>
+                            <div class="degree-dot"></div>
+                            <div class="degree-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">Centro de Treinamento</div>
+                        <div class="data-item-value" data-user-ct>CT001</div>
+                    </div>
+                </div>
+
+                <div class="data-item">
+                    <div>
+                        <div class="data-item-label">Status</div>
+                        <div class="data-item-value" id="statusBadge">✅ Ativo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Carregar dados adicionais do painel
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuario = obterSessao();
+            
+            if (usuario) {
+                // Atualizar header
+                document.getElementById('headerUserName').textContent = usuario.nome || 'Usuário';
+
+                // Atualizar cor da faixa
+                const faixa = usuario.faixa || 'Branca';
+                const beltBadge = document.getElementById('beltBadge');
+                if (beltBadge) {
+                    beltBadge.className = 'belt-badge belt-' + faixa.toLowerCase();
+                    beltBadge.textContent = faixa;
+                }
+
+                // Atualizar grau (dots)
+                const grau = usuario.grau || 0;
+                const dots = document.querySelectorAll('.degree-dot');
+                dots.forEach((dot, index) => {
+                    if (index < grau) {
+                        dot.classList.add('filled');
+                    }
+                });
+
+                console.log('✅ Painel do aluno atualizado');
+            }
+        });
+    </script>
+</body>
+</html>

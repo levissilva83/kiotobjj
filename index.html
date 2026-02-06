@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academy Jiu Jitsu - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            margin: 0 0 5px 0;
+            font-size: 28px;
+        }
+
+        .logo p {
+            color: #666;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button-primary:active {
+            transform: translateY(0);
+        }
+
+        .button-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px;
+            }
+
+            .logo h1 {
+                font-size: 24px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                <h1>🥋 ACADEMY JIU JITSU</h1>
+                <p>Sistema de Controle de Alunos</p>
+            </div>
+
+            <div class="message" id="messageBox"></div>
+
+            <div class="tabs">
+                <button class="tab-button active" data-tab="login">Entrar</button>
+                <button class="tab-button" data-tab="register">Cadastrar</button>
+            </div>
+
+            <!-- TAB: LOGIN -->
+            <div class="tab-content active" id="loginTab">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="loading" id="loginLoading">
+                        <span class="spinner"></span>
+                        Verificando dados...
+                    </div>
+
+                    <button type="submit" class="button button-primary" id="loginButton">
+                        ENTRAR
+                    </button>
+                </form>
+
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                    <p style="font-size: 12px; color: #999; margin: 0;">
+                        Não tem cadastro? Clique em "Cadastrar" acima
+                    </p>
+                </div>
+
+                <div style="margin-top: 15px; padding: 12px; background: #f0f4ff; border-radius: 6px; font-size: 12px; color: #555;">
+                    <strong>Dados de teste:</strong><br>
+                    Email: joao123@email.com<br>
+                    Senha: Senha123
+                </div>
+            </div>
+
+            <!-- TAB: REGISTER -->
+            <div class="tab-content" id="registerTab">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Nome Completo</label>
+                        <input type="text" id="registerName" placeholder="João Silva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">E-mail</label>
+                        <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Senha</label>
+                        <input type="password" id="registerPassword" placeholder="••••••••" required>
+                        <p class="help-text">Mínimo 8 caracteres</p>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="registerBelt">Faixa</label>
+                            <select id="registerBelt" required>
+                                <option value="">Escolha sua faixa</option>
+                                <option value="Branca">🟫 Branca</option>
+                                <option value="Azul">🟦 Azul</option>
+                                <option value="Roxa">🟪 Roxa</option>
+                                <option value="Marrom">🟪 Marrom</option>
+                                <option value="Preta">⬛ Preta</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registerCT">Centro de Treinamento</label>
+                            <select id="registerCT" required>
+                                <option value="">Escolha seu CT</option>
+                                <option value="CT001">CT Vila Olímpia</option>
+                                <option value="CT002">CT Centro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="registerLoading">
+                        <span class="spinner"></span>
+                        Criando sua conta...
+                    </div>
+
+                    <button type="submit" class="button button-primary" id="registerButton">
+                        CADASTRAR
+                    </button>
+                </form>
+
+                <div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-radius: 6px; font-size: 12px; color: #664d03;">
+                    <strong>⚠️ Atenção:</strong> Após cadastrar, você deverá aguardar a aprovação do professor para fazer login.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // ========== INICIALIZAÇÃO ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarTabs();
+            inicializarFormularios();
+            console.log('✅ index.html carregado e inicializado');
+        });
+
+        // ========== TABS ==========
+        function inicializarTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    this.classList.add('active');
+                    document.getElementById(tabName + 'Tab').classList.add('active');
+
+                    limparMensagem();
+                    document.getElementById('loginForm').reset();
+                    document.getElementById('registerForm').reset();
+                });
+            });
+        }
+
+        // ========== FORMULÁRIOS ==========
+        function inicializarFormularios() {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                fazerLogin();
+            });
+
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                fazerRegistro();
+            });
+        }
+
+        // ========== LOGIN ==========
+        function fazerLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const senha = document.getElementById('loginPassword').value;
+
+            if (!email) {
+                mostrarMensagem('Por favor, digite seu email', 'error');
+                return;
+            }
+
+            if (!validarEmail(email)) {
+                mostrarMensagem('Email inválido', 'error');
+                return;
+            }
+
+            if (!senha) {
+                mostrarMensagem('Por favor, digite sua senha', 'error');
+                return;
+            }
+
+            document.getElementById('loginLoading').classList.add('show');
+            document.getElementById('loginButton').disabled = true;
+
+            chamarAPI('fazerLogin', { email, senha })
+                .then(data => {
+                    document.getElementById('loginLoading').classList.remove('show');
+                    document.getElementById('loginButton').disabled = false;
+
+                    if (data.sucesso) {
+                        sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
+                        sessionStorage.setItem('role', data.usuario.role || 'aluno');
+
+                        mostrarMensagem('Login realizado! Redirecionando...', 'success');
+
+                        setTimeout(() => {
+                            if (data.usuario.role === 'admin') {
+                                window.location.href = 'admin.html';
+                            } else {
+                                window.location.href = 'aluno.html';
+                            }
+                        }, 1000);
+                    } else {
+                        mostrarMensagem(data.mensagem || 'Erro ao fazer login', 'error');
+                        document.getElementById('loginPassword').value = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro no login:', error);
+                    document.getElementById('loginLoading').classList.remove('show');
+                    document.getElementById('loginButton').disabled = false;
+                    mostrarMensagem('Erro de conexão. Verifique sua internet.', 'error');
+                });
+        }
+
+        // ========== REGISTRO ==========
+        function fazerRegistro() {
+            const nome = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const senha = document.getElementById('registerPassword').value;
+            const faixa = document.getElementById('registerBelt').value;
+            const ct = document.getElementById('registerCT').value;
+
+            if (!nome) {
+                mostrarMensagem('Por favor, digite seu nome', 'error');
+                return;
+            }
+
+            if (nome.length < 3) {
+                mostrarMensagem('Nome deve ter pelo menos 3 caracteres', 'error');
+                return;
+            }
+
+            if (!email) {
+                mostrarMensagem('Por favor, digite seu email', 'error');
+                return;
+            }
+
+            if (!validarEmail(email)) {
+                mostrarMensagem('Email inválido', 'error');
+                return;
+            }
+
+            if (!senha) {
+                mostrarMensagem('Por favor, digite uma senha', 'error');
+                return;
+            }
+
+            if (senha.length < 8) {
+                mostrarMensagem('Senha deve ter pelo menos 8 caracteres', 'error');
+                return;
+            }
+
+            if (!faixa) {
+                mostrarMensagem('Por favor, escolha sua faixa', 'error');
+                return;
+            }
+
+            if (!ct) {
+                mostrarMensagem('Por favor, escolha seu centro de treinamento', 'error');
+                return;
+            }
+
+            document.getElementById('registerLoading').classList.add('show');
+            document.getElementById('registerButton').disabled = true;
+
+            chamarAPI('registrarAluno', { nome, email, senha, faixa, ct })
+                .then(data => {
+                    document.getElementById('registerLoading').classList.remove('show');
+                    document.getElementById('registerButton').disabled = false;
+
+                    if (data.sucesso) {
+                        mostrarMensagem('Cadastro realizado! Aguarde aprovação do professor.', 'success');
+                        document.getElementById('registerForm').reset();
+
+                        setTimeout(() => {
+                            document.querySelectorAll('.tab-button')[0].click();
+                        }, 2000);
+                    } else {
+                        mostrarMensagem(data.mensagem || 'Erro ao cadastrar', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro no registro:', error);
+                    document.getElementById('registerLoading').classList.remove('show');
+                    document.getElementById('registerButton').disabled = false;
+                    mostrarMensagem('Erro de conexão. Verifique sua internet.', 'error');
+                });
+        }
+
+        // ========== UTILS ==========
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function mostrarMensagem(texto, tipo = 'info') {
+            const box = document.getElementById('messageBox');
+            box.textContent = texto;
+            box.className = 'message show ' + tipo;
+
+            setTimeout(() => {
+                limparMensagem();
+            }, 5000);
+        }
+
+        function limparMensagem() {
+            const box = document.getElementById('messageBox');
+            box.className = 'message';
+        }
+    </script>
+</body>
+</html>
