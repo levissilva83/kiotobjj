@@ -5,7 +5,7 @@
 // ====================================
 
 // ✅ URL CORRIGIDA DO BACKEND
-const API_URL = "https://script.google.com/macros/s/AKfycbyjmWFKYD6Pz9JZ_u_d8cexShlRGxTibSpuEHk7fQ4Ye2zzadB62Fx5EyEiRFsc5wdqtA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwxKOvQkEcwFB6_1l6fkHJ-sCAvCnynIzjdM98ZmLirsm97j4hr9pQOmolWglPhKecPTw/exec";
 
 // ✅ TIMEOUT PARA EVITAR "CARREGANDO INFINITO"
 const API_TIMEOUT = 30000; // 30 segundos
